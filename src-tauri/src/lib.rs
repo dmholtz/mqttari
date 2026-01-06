@@ -70,17 +70,8 @@ async fn unsubscribe_topic(state: State<'_, MqttService>, topic: &str) -> Result
     Ok(())
 }
 
-#[tauri::command]
-fn increase_counter(state: State<'_, Mutex<MqttClient>>) -> u32{
-    return 0;
-    // let mut client = state.lock().unwrap();
-    // client.client_state += 1;
-    // println!("Client state increased to {}", client.client_state);
-    // client.client_state
-}
-
 #[tauri::command(async)]
-async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>) -> Result<(), String> {
+async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host: &str, port: u16) -> Result<(), String> {
     let mut guard = service.inner.lock().await;
 
     // prevent double start
@@ -88,7 +79,7 @@ async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>) -> R
         return Err("MQTT client already running".into());
     }
 
-    let mut mqtt_options = MqttOptions::new("rumqtt-client", "localhost", 1883);
+    let mut mqtt_options = MqttOptions::new("rumqtt-client", host, port);
     mqtt_options.set_keep_alive(Duration::from_secs(5));
     mqtt_options.set_max_packet_size(127000, 127000);
 
@@ -170,11 +161,6 @@ async fn stop_mqtt(service: State<'_, MqttService>) -> Result<(), String> {
     }
 }
 
-
-struct MqttClient {
-    client_state: u32,
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     //let mut mqttoptions = MqttOptions::new("rumqtt-client", "test.mosquitto.org", 1883);
@@ -186,7 +172,7 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, increase_counter, start_mqtt, stop_mqtt, subscribe_topic])
+        .invoke_handler(tauri::generate_handler![greet, start_mqtt, stop_mqtt, subscribe_topic])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
