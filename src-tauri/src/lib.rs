@@ -1,19 +1,13 @@
-
 use std::time::Duration;
 
-use tauri::Manager;
-use tauri::State;
-use tauri::Emitter;
-
-use rumqttc::{MqttOptions, QoS, AsyncClient, Event, Incoming};
-
+use base64;
+use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, QoS};
+use tauri::{Emitter, Manager, State};
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;
 
-use base64;
-
 pub struct RunningMqtt {
-    cancel: CancellationToken, 
+    cancel: CancellationToken,
     task: tauri::async_runtime::JoinHandle<()>,
     client: AsyncClient,
 }
@@ -41,11 +35,12 @@ async fn subscribe_topic(state: State<'_, MqttService>, topic: &str) -> Result<(
     let guard = state.inner.lock().await;
 
     if let Some(running) = guard.as_ref() {
-        running.client.subscribe(topic, QoS::AtMostOnce)
+        running
+            .client
+            .subscribe(topic, QoS::AtMostOnce)
             .await
             .map_err(|e| e.to_string())?;
-    }
-    else {
+    } else {
         return Err("MQTT client not running".into());
     }
     println!("Subscribed to topic: {}", topic);
@@ -58,11 +53,12 @@ async fn unsubscribe_topic(state: State<'_, MqttService>, topic: &str) -> Result
     let guard = state.inner.lock().await;
 
     if let Some(running) = guard.as_ref() {
-        let _ = running.client.unsubscribe(topic)
+        let _ = running
+            .client
+            .unsubscribe(topic)
             .await
             .map_err(|e| e.to_string())?;
-    }
-    else {
+    } else {
         return Err("MQTT client not running".into());
     }
     println!("Unsubscribed from topic: {}", topic);
@@ -71,7 +67,12 @@ async fn unsubscribe_topic(state: State<'_, MqttService>, topic: &str) -> Result
 }
 
 #[tauri::command(async)]
-async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host: &str, port: u16) -> Result<(), String> {
+async fn start_mqtt(
+    app: tauri::AppHandle,
+    service: State<'_, MqttService>,
+    host: &str,
+    port: u16,
+) -> Result<(), String> {
     let mut guard = service.inner.lock().await;
 
     // prevent double start
@@ -86,7 +87,8 @@ async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host
     let (client, mut eventloop) = AsyncClient::new(mqtt_options, 10);
 
     // subscribe before polling
-    client.subscribe("$SYS/broker/uptime", rumqttc::QoS::AtLeastOnce)
+    client
+        .subscribe("$SYS/broker/uptime", rumqttc::QoS::AtLeastOnce)
         .await
         .map_err(|e| e.to_string())?;
 
@@ -103,7 +105,7 @@ async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host
                     app_clone.emit("mqtt://status", "stopped").ok();
                     break;
                 }
-                
+
                 res = eventloop.poll() => {
                     match res {
                         Ok(Event::Incoming(Incoming::Publish(p))) => {
@@ -127,7 +129,7 @@ async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host
                                 });
                             }
 
-                            
+
                         }
                         Ok(_) => {}
                         Err(e) => {
@@ -136,7 +138,7 @@ async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host
                         }
                     }
                 }
-            }   
+            }
         }
     });
     *guard = Some(RunningMqtt {
@@ -155,8 +157,7 @@ async fn stop_mqtt(service: State<'_, MqttService>) -> Result<(), String> {
         running.cancel.cancel();
         let _ = running.task.await;
         Ok(())
-    }
-    else {
+    } else {
         Err("MQTT client not running".into())
     }
 }
@@ -172,7 +173,12 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, start_mqtt, stop_mqtt, subscribe_topic])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            start_mqtt,
+            stop_mqtt,
+            subscribe_topic
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

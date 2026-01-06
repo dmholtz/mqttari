@@ -1,0 +1,15 @@
+# Line width used for wrapping code and comments
+max_width = 100
+
+# Prefer spaces over tabs (Rust convention)
+hard_tabs = false
+tab_spaces = 4
+
+# Normalize line endings and indentation style
+newline_style = "Unix"
+
+# Keep imports tidy and grouped
+reorder_imports = true
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+reorder_modules = true
