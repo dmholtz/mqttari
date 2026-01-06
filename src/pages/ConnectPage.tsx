@@ -1,66 +1,59 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from '@tauri-apps/api/core';
 
-import "../App.css";
+import '../App.css';
 
 export default function ConnectPage() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    brokerUrl: "",
-    port: "",
-    clientId: "",
-    username: "",
-    password: ""
-  });
+    const [form, setForm] = useState({
+        brokerUrl: '',
+        port: '',
+        clientId: '',
+        username: '',
+        password: '',
+    });
 
-  const update = (e: React.ChangeEvent<HTMLInputElement>): void =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const update = (e: React.ChangeEvent<HTMLInputElement>): void =>
+        setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleConnect = async () => {
-    const invokeArgs = {
-      host: form.brokerUrl || "localhost",
-      port: parseInt(form.port) || 1883,
+    const handleConnect = async () => {
+        const invokeArgs = {
+            host: form.brokerUrl || 'localhost',
+            port: parseInt(form.port) || 1883,
+        };
+        await invoke('start_mqtt', invokeArgs);
+        navigate('/dashboard', { state: { connectionConfig: form } });
     };
-    await invoke("start_mqtt", invokeArgs);
-    navigate("/dashboard", { state: { connectionConfig: form } });
-  };
 
-  return (
-    <div className="page">
-      <div className="card">
-        <h2>Connect to MQTT Broker</h2>
+    return (
+        <div className="page">
+            <div className="card">
+                <h2>Connect to MQTT Broker</h2>
 
-        <div className="form">
-          <label>
-            Broker URL
-            <input
-              name="brokerUrl"
-              placeholder="localhost"
-              value={form.brokerUrl}
-              onChange={update}
-            />
-          </label>
+                <div className="form">
+                    <label>
+                        Broker URL
+                        <input
+                            name="brokerUrl"
+                            placeholder="localhost"
+                            value={form.brokerUrl}
+                            onChange={update}
+                        />
+                    </label>
 
-          <label>
-            Port
-            <input
-              name="port"
-              placeholder="1883"
-              value={form.port}
-              onChange={update}
-            />
-          </label>
-          
-          <button onClick={handleConnect}>
-            Connect
-          </button>
-        </div>
-      </div>
+                    <label>
+                        Port
+                        <input name="port" placeholder="1883" value={form.port} onChange={update} />
+                    </label>
 
-      <style>{`
+                    <button onClick={handleConnect}>Connect</button>
+                </div>
+            </div>
+
+            <style>{`
         .page {
           min-height: 100vh;
           display: flex;
@@ -95,6 +88,6 @@ export default function ConnectPage() {
           color: #fff;
         }
       `}</style>
-    </div>
-  );
+        </div>
+    );
 }

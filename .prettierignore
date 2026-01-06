@@ -1,0 +1,13 @@
+.github
+.vscode
+node_modules
+dist
+build
+coverage
+src-tauri
+.next
+
+*.json
+*.yml
+*.yaml
+*.toml
