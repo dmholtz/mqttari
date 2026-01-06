@@ -34,6 +34,15 @@ function renderTreeItems(node: any, path: string = ''): ReactElement[] {
     const fullPath = path ? `${path}/${key}` : key;
     const item = node[key];
     if (item.payload !== undefined) {
+        
+      let display_content: string;
+      if (item.payload.length > 30) {
+        display_content = item.payload.substring(0, 30) + '...';
+      }
+      else {
+        display_content = item.payload;
+      }
+
       // leaf
       return (
         <TreeItem
@@ -42,7 +51,7 @@ function renderTreeItems(node: any, path: string = ''): ReactElement[] {
           label={
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
               <span>{key}</span>
-              <span style={{ marginLeft: 'auto', color: 'gray' }}>{item.payload}</span>
+              <span style={{ marginLeft: 'auto', color: 'gray' }}>{display_content}</span>
             </div>
           }
         />
