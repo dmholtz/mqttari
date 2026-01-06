@@ -110,7 +110,7 @@ async fn start_mqtt(app: tauri::AppHandle, service: State<'_, MqttService>, host
                             if p.topic == "txt/image" {
                                 println!("Received image data on topic {}: {} bytes", p.topic, p.payload.len());
                                 let encoded = base64::encode(&p.payload);
-                                app_clone.emit("image-bytes", serde_json::json!({
+                                app_clone.emit("mqtt://message", serde_json::json!({
                                     "topic": p.topic,
                                     "payload": encoded,
                                     "is_base64": true

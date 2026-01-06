@@ -25,8 +25,8 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({ selectedTopic, topics }) =>
   const payload = selectedTopic ? topics[selectedTopic] : null;
 
   return (
-    <div style={{ flex: 1, marginLeft: '20px' }}>
-      <h3>Topic Details</h3>
+    <div style={{ flex: 1 }}>
+      <h2>Topic Details</h2>
       {selectedTopic ? (
         <div>
           <p><strong>Path:</strong> {selectedTopic}</p>

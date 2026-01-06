@@ -8,10 +8,10 @@ import { useNavigate } from "react-router";
 
 import TopicView from '../components/TopicView';
 import TopicDetails from '../components/TopicDetails';
+import MenuBar from '../components/MenuBar';
 
 function DashboardPage() {
   const [name, setName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [receivedTopics, setReceivedTopics] = useState<Record<string, string>>({});
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
@@ -31,46 +31,37 @@ function DashboardPage() {
     setReceivedTopics(prev => ({ ...prev, [topic]: payload }));
   });
 
-  listen("image-bytes", event => {
-    const { payload } = event.payload as any;
-    const url = `data:image/jpeg;base64,${payload}`;
-    setImageUrl(url);
-  });
-
   return (
-    <main className="container">
-      <div style={{ display: 'flex', marginBottom: '20px' }}>
-        <TopicView topics={receivedTopics} onTopicSelect={setSelectedTopic} />
-        <TopicDetails selectedTopic={selectedTopic} topics={receivedTopics} />
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <MenuBar onDisconnect={stopMqtt} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', overflow: 'hidden', padding: '16px' }}>
+          <div className="panel" style={{ resize: 'horizontal', overflow: 'auto', minWidth: '200px' }}>
+            <TopicView topics={receivedTopics} onTopicSelect={setSelectedTopic} />
+          </div>
+          <div className="panel" style={{ overflow: 'auto', minWidth: '200px' }}>
+            <TopicDetails selectedTopic={selectedTopic} topics={receivedTopics} />
+          </div>
+        </div>
+        <div className="panel" style={{ margin: '16px' }}>
+          <form
+            className="row"
+            onSubmit={(e) => {
+              e.preventDefault();
+              subscribe();
+              e.currentTarget.reset();
+            }}
+          >
+            <input
+              id="greet-input"
+              onChange={(e) => setName(e.currentTarget.value)}
+              placeholder="Enter a topic..."
+            />
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
       </div>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          subscribe();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a topic..."
-        />
-        <button type="submit">Subscribe</button>
-      </form>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          stopMqtt();
-        }}
-      >
-        <button type="submit">Disconnect</button>
-      </form>
-
-      <img src={imageUrl} alt="Waiting for image…" />
-    </main>
+    </div>
   );
 }
 
