@@ -178,7 +178,8 @@ pub fn run() {
             greet,
             start_mqtt,
             stop_mqtt,
-            subscribe_topic
+            subscribe_topic,
+            unsubscribe_topic,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -25,4 +25,4 @@ dist-ssr
 # Custom
 public
 src/assets
-src-tauri/icons
+src-tauri/_icons
