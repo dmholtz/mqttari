@@ -1,7 +1,11 @@
-# Tauri + React + Typescript
+# mqttari
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+A lightweight cross-platform MQTT viewer built with Tauri and React.
 
-## Recommended IDE Setup
+<img width="1552" height="1014" alt="grafik" src="https://github.com/user-attachments/assets/9f810510-fa6d-4cc7-95a9-e3ab39ab83eb" />
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Setup
+
+```bash
+pnpm tauri build
+```
