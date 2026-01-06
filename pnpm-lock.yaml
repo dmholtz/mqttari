@@ -38,9 +38,6 @@ importers:
       react-router:
         specifier: ^7.11.0
         version: 7.11.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react-split-pane:
-        specifier: ^3.0.4
-        version: 3.0.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
       '@tauri-apps/cli':
         specifier: ^2
@@ -943,13 +940,6 @@ packages:
     peerDependenciesMeta:
       react-dom:
         optional: true
-
-  react-split-pane@3.0.4:
-    resolution: {integrity: sha512-+QNayN8lsYhT87z0bH5yAuUocoqHlc3AQnw/+pGXMH2kG2+mSfNAR4fHhEdmweHLFjIyX811hh9sgCkiHXCYag==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-transition-group@4.4.5:
     resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
@@ -1862,11 +1852,6 @@ snapshots:
       react: 19.2.3
       set-cookie-parser: 2.7.2
     optionalDependencies:
-      react-dom: 19.2.3(react@19.2.3)
-
-  react-split-pane@3.0.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
-    dependencies:
-      react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
   react-transition-group@4.4.5(react-dom@19.2.3(react@19.2.3))(react@19.2.3):

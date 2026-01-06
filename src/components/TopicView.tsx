@@ -88,7 +88,7 @@ const TopicView: React.FC<TopicViewProps> = ({ topics, onTopicSelect }) => {
     }
   }, [selectedItems, topics, onTopicSelect]);
 
-  const handleItemClick = (event: React.MouseEvent, itemId: string) => {
+  const handleItemClick = (_event: React.MouseEvent, itemId: string) => {
     setSelectedItems(itemId);
   };
 

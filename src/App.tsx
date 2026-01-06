@@ -7,7 +7,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* */}
         <Route path="/" element={<Navigate to="/connect" replace />} />
         <Route path="/connect" element={<ConnectPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />

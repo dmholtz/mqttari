@@ -14,7 +14,7 @@ const TopicDetails: React.FC<TopicDetailsProps> = ({ selectedTopic, topics }) =>
   const [viewMode, setViewMode] = useState<'text' | 'image'>('text');
 
   const handleViewModeChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newMode: 'text' | 'image' | null,
   ) => {
     if (newMode !== null) {
