@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use base64;
+use base64::{engine::general_purpose::STANDARD as Base64Engine, Engine as _};
 use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, QoS};
 use tauri::{Emitter, Manager, State};
 use tokio::sync::Mutex;
@@ -12,6 +12,7 @@ pub struct RunningMqtt {
     client: AsyncClient,
 }
 
+#[derive(Default)]
 pub struct MqttService {
     inner: Mutex<Option<RunningMqtt>>,
 }
@@ -53,7 +54,7 @@ async fn unsubscribe_topic(state: State<'_, MqttService>, topic: &str) -> Result
     let guard = state.inner.lock().await;
 
     if let Some(running) = guard.as_ref() {
-        let _ = running
+        running
             .client
             .unsubscribe(topic)
             .await
@@ -111,7 +112,7 @@ async fn start_mqtt(
                         Ok(Event::Incoming(Incoming::Publish(p))) => {
                             if p.topic == "txt/image" {
                                 println!("Received image data on topic {}: {} bytes", p.topic, p.payload.len());
-                                let encoded = base64::encode(&p.payload);
+                                let encoded = Base64Engine.encode(&p.payload);
                                 app_clone.emit("mqtt://message", serde_json::json!({
                                     "topic": p.topic,
                                     "payload": encoded,
